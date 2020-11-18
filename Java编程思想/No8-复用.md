@@ -260,6 +260,12 @@ public class demo {
         s.eventAll(s, "要美女的联系方式");
     }
 }
+
+/*
+张三你好，我是李四，你委托我买早餐的事我已经做完了！
+张三你好，我是李四，你委托我要美女的联系方式的事我已经做完了！
+张三你好，我是王五，你委托我要美女的联系方式的事我已经做完了！
+*/
 ```
 代码编写有个这样的原则：能不用继承就不用继承，能使用委托实现的就不使用继承。两个类有明显示的层级关系时使用继承，没有明显的层级关系，
 仅仅是为了在一个类中使用另一个类的方法时应该使用委托。
@@ -267,4 +273,72 @@ public class demo {
 根据《重构》中写道：现在有滥用继承的趋势，JDK 中 Stack 就是一个滥用继承的典型！
 java.util.Stack 继承自 java.util.Vector，其实 Stack 与 Vector 在用途上完全是风马牛不相及的两个容器。
 
-6. 
+6. 向上转型：
+    `继承`最重要的方面不是为新类提供方法。他是新类与基类之间的一种关系。简而言之，这种关系可以表述为`新类是已有类的一种类型`.
+    
+    派生类转换成基类是向上的，称作`向上转型`,因为从一个更具体的类转化为一个更概括的类，所以向上转型是永远安全的。也就是说，派生类是基类
+    的一个超集。他可能比基类包含更多的方法，但他必须至少具有与基类一样的方法，向上转型期间，只可能失去方法，不会添加方法。例如：`三角形`
+    向上转型为`形状`。
+    
+7. final关键字：
+    `final数据`：final修饰基本数据类型，会使数值恒定不变，而对于对象引用，final使引用恒定不变，一旦引用被初始化指向了某个对象，他就
+                不能改为指向其他对象。但是对象本身是可以修改的。
+    `空白final`：空白final指的是没有初始化值得final属性，编译器确保空白final在使用前必须被初始化。这样既能使一个类的每个对象final属性
+                不同。也能保持它的不变性。
+    `final参数`：在参数列表中，将参数声明为final意味着在方法中不能改变参数指向的对象或基本变量。你只能读取而不能修改参数，这个特性主要
+                用于传递数据给匿名内部类。
+    `final方法`：使用final方法的原因有两个：一是给方法上锁，防止子类通过覆写改变方法的行为。这是出于继承的考虑，确保方法的行为不会因继承
+                而改变。随着虚拟机的改进，第二个原因已经不重要了，现在只有为了明确禁止覆写方法时才在方法上使用final.
+    `final与private`: 类中所有的private方法都隐式的定义为final.
+    `final类`：当一个类被定义为final就意味着他不能被继承。之所以这么做，是因为类的设计就是永远不需要改动，或者出于安全不希望他有子类。
+              由于final类禁止继承，所以类中所有的方法都会被隐式的指定为final。
+    
+8. 类初始化和加载：
+    `类的代码在首次使用时加载`,这通常是指创建类的第一个对象，或者是访问了类的static属性或方法，构造器也是一个static方法，准确的说，一个
+    类当他的任意一个static成员被访问时，就会被加载。所有的static对象和static代码块在加载时按照文本顺序依次初始化，static变量只被初始化
+    一次。
+    
+```java
+class Insect {
+    private int i = 9;
+    protected int j;
+
+    Insect() {
+        System.out.println("i = " + i + ", j = " + j);
+        j = 39;
+    }
+
+    private static int x1 = printInit("static Insect.x1 initialized");
+
+    static int printInit(String s) {
+        System.out.println(s);
+        return 47;
+    }
+}
+
+public class Beetle extends Insect {
+    private int k = printInit("Beetle.k.initialized");
+
+    public Beetle() {
+        System.out.println("k = " + k);
+        System.out.println("j = " + j);
+    }
+
+    private static int x2 = printInit("static Beetle.x2 initialized");
+
+    public static void main(String[] args) {
+        System.out.println("Beetle constructor");
+        Beetle b = new Beetle();
+    }
+}
+
+/* 输出：
+static Insect.x1 initialized
+static Beetle.x2 initialized
+Beetle constructor
+i = 9, j = 0
+Beetle.k initialized
+k = 47
+j = 39
+*/
+```
