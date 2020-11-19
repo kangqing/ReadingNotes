@@ -1,0 +1,266 @@
+1. 链接外部类：
+    当生成一个内部类对象时，此对象与制造它的外部对象之间就有了一种联系，所以它能访问其外部对象的所有成员，不需要任何特殊条件。此外，内部
+    类还拥有其外部类的所有元素的访问权。这是如何做到的？当某个外部类对象创建了一个内部类对象时，此内部类对象必定会秘密的捕获一个指向那个
+    外部类对象的引用。
+    
+2. 使用`.this`和`.new`
+    如果你需要生成对外部类对象的引用，可以使用外部类的名字后面紧跟`.this`。这样产生的引用自动的具有正确的类型，这一点在编译期就被知晓并
+    受到检查，因此没有任何运行时开销。下面展示如何使用`.this`.
+```java
+public class DotThis {
+    void f() { System.out.println("DotThis.f()"); }
+
+    public class Inner {
+        public DotThis outer() {
+            return DotThis.this;
+            // A plain "this" would be Inner's "this"
+        }
+    }
+
+    public Inner inner() { return new Inner(); }
+
+    public static void main(String[] args) {
+        DotThis dt = new DotThis();
+        DotThis.Inner dti = dt.inner();
+        dti.outer().f();
+    }
+}
+/* 输出
+DotThis.f()
+*/
+```
+   有时候你想告知某些其他对象，去创建其某个内部类的对象。要实现此目的，你必须在new表达式中提供对其他外部类对象的引用，这就需要使用`.new`
+   语法，如下：
+```java
+public class DotNew {
+    public class Inner {}
+    public static void main(String[] args) {
+        DotNew dn = new DotNew();
+        DotNew.Inner dni = dn.new Inner();
+    }
+}
+```
+   要想直接创建内部类的对象，你不能按照你想的方式，去引用外部类的名字DotNew,而是必须使用外部类的对象来创建该内部类对象，就像在上面的程序
+   中所看到的那样。这也解决了内部类名字作用域的问题，因此你不必声明（实际上你不能声明）dn.new DotNew.Inner
+   下面你可以看到将`.new`应用于Parcel的实例：
+```java
+public class Parcel3 {
+    class Contents {
+        private int i = 11;
+        public int value() { return i; }
+    }
+    class Destination {
+        private String label;
+        Destination(String whereTo) { label = whereTo; }
+        String readLabel() { return label; }
+    }
+    public static void main(String[] args) {
+        Parcel3 p = new Parcel3();
+        // Must use instance of outer class
+        // to create an instance of the inner class:
+        Parcel3.Contents c = p.new Contents();
+        Parcel3.Destination d =
+                p.new Destination("Tasmania");
+    }
+}
+```
+   在拥有外部类对象之前是不可能创建内部类对象的。这是因为内部类对象会连接到建立他的外部类对象上。但是如果你创建的是嵌套类（静态内部类），
+   那么他不需要对外部类对象的引用。
+   
+3. 匿名内部类：
+```java
+public class Parcel7 {
+    public Contents contents() {
+        return new Contents() { // Insert class definition
+            private int i = 11;
+
+            @Override
+            public int value() { return i; }
+        }; // Semicolon required
+    }
+
+    public static void main(String[] args) {
+        Parcel7 p = new Parcel7();
+        Contents c = p.contents();
+    }
+}
+```
+   contents()方法将返回值的生成与表示这个返回值的类的定义结合在一起！另外，这个类是匿名的。这种奇怪的语法指的是：`创建一个继承自Contents
+   的匿名类的对象`。通过new表达式返回的引用被自动向上转型为对`Contents`的引用。上述匿名内部类是以下形式的简化：
+  
+```java
+public class Parcel7b {
+    class MyContents implements Contents {
+        private int i = 11;
+        @Override
+        public int value() { return i; }
+    }
+
+    public Contents contents() {
+        return new MyContents();
+    }
+
+    public static void main(String[] args) {
+        Parcel7b p = new Parcel7b();
+        Contents c = p.contents();
+    }
+}
+```
+   在这个匿名内部类中，使用了默认的构造器来生成`Contents`下面的代码展示的是，如果你的基类需要一个有参数的构造器应该怎么办：
+```java
+public class Parcel8 {
+    public Wrapping wrapping(int x) {
+        // Base constructor call:
+        return new Wrapping(x) { // [1]
+            @Override
+            public int value() {
+                return super.value() * 47;
+            }
+        }; // [2]
+    }
+    public static void main(String[] args) {
+        Parcel8 p = new Parcel8();
+        Wrapping w = p.wrapping(10);
+    }
+}
+```
+   匿名内部类与正规的继承相比有些受限，因为匿名内部类既可以扩展类，也可以实现接口，但是不能两者兼备。而且如果是实现接口，也只能实现一个。
+   
+4. 嵌套类：
+    如果并不需要内部类对象与其外部类对象之间有联系，那么可以将内部类声明为`static`,这通常被称为`嵌套类`。普通的内部类对象隐式的保存了
+    一个引用，指向创建它的外部类对象。然而，嵌套类就不是这样了，嵌套类意味着：
+    (1).要创建嵌套类的对象，并不需要其外部类的对象。
+    (2).不能从嵌套类的对象中访问非静态的外部类对象。
+    嵌套类与普通的内部类还有一个区别：普通内部类的字段与方法，只能放在类的外部层次上，所以普通内部类不能有static数据和static字段，也不能
+    包含嵌套类。但是嵌套类可以包含所有这些东西。
+    
+    嵌套类可作为接口的一部分，接口中的任何类都自动是public和static的，因为类是static的，只能将嵌套类置于接口的命名空间内，这并不违反接
+    口的规则。你甚至可以在内部类中实现其外部的接口：
+```java
+public interface ClassInInterface {
+    void howdy();
+    class Test implements ClassInInterface {
+        @Override
+        public void howdy() {
+            System.out.println("Howdy!");
+        }
+        public static void main(String[] args) {
+            new Test().howdy();
+        }
+    }
+}
+
+```
+   如果你想创建某些公共代码，使他们可以被某个接口的所有不同实现公用，那么使用接口内部嵌套类会显得很方便：
+   
+5. 为什么需要内部类？
+    一般说来，内部类继承自某个类或实现某个接口，内部类的代码操作创建它的外部类的对象。所以可以认为内部类提供了某种进入其外部类的窗口。
+    
+    内部类必须要回答的一个问题是：如果只是需要一个对接口的引用，为什么不通过外部类实现那个接口呢？答案是：“如果这能满足需求，那么就应该
+    这样做。”那么内部类实现一个接口与外部类实现这个接口有什么区别呢？答案是：后者不是总能享用到接口带来的方便，有时需要用到接口的实现。
+    所以，使用内部类最吸引人的原因是：
+    
+    `每个内部类都能独立地继承自一个（接口的）实现，所以无论外部类是否已经继承了某个（接口的）实现，对于内部类都没有影响。`
+    
+    如果没有内部类提供的、可以继承多个具体的或抽象的类的能力，一些设计与编程问题就很难解决。从这个角度看，内部类使得多重继承的解决方案
+    变得完整。接口解决了部分问题，而内部类有效地实现了“多重继承”。也就是说，内部类允许继承多个非接口类型（译注：类或抽象类）。
+    
+    为了看到更多的细节，让我们考虑这样一种情形：即必须在一个类中以某种方式实现两个接口。由于接口的灵活性，你有两种选择；使用单一类，或者
+    使用内部类：
+```java
+package innerclasses.mui;
+interface A {}
+interface B {}
+class X implements A, B {}
+class Y implements A {
+    B makeB() {
+        // Anonymous inner class:
+        return new B() {};
+    }
+}
+public class MultiInterfaces {
+    static void takesA(A a) {}
+    static void takesB(B b) {}
+    public static void main(String[] args) {
+        X x = new X();
+        Y y = new Y();
+        takesA(x);
+        takesA(y);
+        takesB(x);
+        takesB(y.makeB());
+    }
+}
+```
+   当然，这里假设在两种方式下的代码结构都确实有逻辑意义。然而遇到问题的时候，通常问题本身就能给出某些指引，告诉你是应该使用单一类，还是
+   使用内部类。但如果没有任何其他限制，从实现的观点来看，前面的例子并没有什么区别，它们都能正常运作。
+   如果拥有的是抽象的类或具体的类，而不是接口，那就只能使用内部类才能实现多重继承：
+```java
+package innerclasses;
+
+class D {}
+
+abstract class E {}
+
+class Z extends D {
+    E makeE() {
+      return new E() {};  
+    }
+}
+
+public class MultiImplementation {
+    static void takesD(D d) {}
+    static void takesE(E e) {}
+
+    public static void main(String[] args) {
+        Z z = new Z();
+        takesD(z);
+        takesE(z.makeE());
+    }
+}
+```
+   如果不需要解决“多重继承”的问题，那么自然可以用别的方式编码，而不需要使用内部类。但如果使用内部类，还可以获得其他一些特性：
+
+   (1).内部类可以有多个实例，每个实例都有自己的状态信息，并且与其外部类对象的信息相互独立。
+   (2).在单个外部类中，可以让多个内部类以不同的方式实现同一个接口，或继承同一个类。 稍后就会展示一个这样的例子。
+   (3).创建内部类对象的时刻并不依赖于外部类对象的创建
+   (4).内部类并没有令人迷惑的"is-a”关系，它就是一个独立的实体。
+   
+6. 闭包与回调：
+    `闭包`是一个可调用的对象，他记录了一些信息，这些信息来自于创建它的作用域。
+    在Java8之前，内部类是实现闭包的唯一方式。在Java8中，我们可以使用lambda表达式来实现闭包行为，语法更加优雅简洁。
+    
+7. 继承内部类：
+    因为内部类的构造器必须连接到指向其外部类对象的引用，所以在继承内部类的时候，事情会变得有点复杂。问题在于，那个指向外部类对象的“秘密的”
+    引用必须被初始化，而在派生类中不再存在可连接的默认对象。要解决这个问题，必须使用特殊的语法来明确说清它们之间的关联：
+```java
+// innerclasses/InheritInner.java
+// Inheriting an inner class
+class WithInner {
+    class Inner {}
+}
+public class InheritInner extends WithInner.Inner {
+    //- InheritInner() {} // Won't compile
+    InheritInner(WithInner wi) {
+        wi.super();
+    }
+    public static void main(String[] args) {
+        WithInner wi = new WithInner();
+        InheritInner ii = new InheritInner(wi);
+    }
+}
+```
+可以看到，InheritInner 只继承自内部类，而不是外部类。但是当要生成一个构造器时，默认的构造器并不算好，而且不能只是传递一个指向外部类对象
+的引用。此外，必须在构造器内使用如下语法：
+```java
+enclosingClassReference.super();
+```
+这样才提供了必要的引用，然后程序才能编译通过。
+
+8. 内部类可以被覆盖吗？不可以
+
+9. 内部类标识符：
+    由于编译后每个类都会产生一个 .class 文件，其中包含了如何创建该类型的对象的全部信息（此信息产生一个"meta-class"，叫做 Class 对象）。
+    
+    你可能猜到了，内部类也必须生成一个 .class 文件以包含它们的 Class 对象信息。这些类文件的命名有严格的规则：外部类的名字，加上 "$" ，
+    再加上内部类的名字。
+    
