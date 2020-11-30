@@ -39,7 +39,7 @@ java -version
 ```shell script
 vim runbroker.sh
 
-vim runsercer.sh
+vim runserver.sh
 ```
 
 5. 启动RocketMQ
