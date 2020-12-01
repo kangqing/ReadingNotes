@@ -4,7 +4,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/MyBatis源码详解/mybatis-demo/pom.xml" />
-        <option value="$PROJECT_DIR$/RocketMQ学习笔记/rocketmq_demo/pom.xml" />
+        <option value="$PROJECT_DIR$/RocketMQ学习笔记/rocketmq-demo/pom.xml" />
       </list>
     </option>
   </component>

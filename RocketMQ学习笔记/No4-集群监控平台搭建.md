@@ -8,7 +8,7 @@ git clone https://github.com/apache/rocketmq-externals.git
 cd rocketmq-console
 
 # 打包之前修改rocketmq-console中配置namesrv集群的地址：
-rocketmq.config.namesrvAddr=192.168.25.135:9876;192.168.25.138:9876
+rocketmq.config.namesrvAddr=192.168.25.135:9876,192.168.25.138:9876
 
 # 打包，跳过测试
 mvn clean package -Dmaven.test.skip=true

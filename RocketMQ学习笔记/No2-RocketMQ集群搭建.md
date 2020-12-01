@@ -109,7 +109,7 @@ systemctl restart network
 学习阶段可以直接关闭防火墙：
 ```shell script
 # 关闭防火墙
-systemctl stop filewalld.service
+systemctl stop firewalld.service
 # 查看防火墙状态
 firewall-cmd --state
 # 禁止开机启动防火墙
