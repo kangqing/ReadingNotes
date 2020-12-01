@@ -124,7 +124,7 @@ systemctl disable firewalld.service
 
 ```shell script
 # 开放单个端口号
-firewall-cmd --remove-port=9876/tcp --permanent
+firewall-cmd --zone=public --add-port=9876/tcp --permanent
 # 重启防火墙
 firewall-cmd --reload
 ```
