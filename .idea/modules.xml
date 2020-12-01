@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ReadingNotes.iml" filepath="$PROJECT_DIR$/.idea/ReadingNotes.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyBatis源码详解/mybatis-demo/mybatis-demo.iml" filepath="$PROJECT_DIR$/MyBatis源码详解/mybatis-demo/mybatis-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RocketMQ学习笔记/rocketmq_demo/rocketmq_demo.iml" filepath="$PROJECT_DIR$/RocketMQ学习笔记/rocketmq_demo/rocketmq_demo.iml" />
     </modules>
   </component>
 </project>
