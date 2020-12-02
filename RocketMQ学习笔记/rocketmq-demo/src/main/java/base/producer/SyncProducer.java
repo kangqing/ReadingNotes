@@ -26,7 +26,7 @@ public class SyncProducer {
         producer.start();
         //4.创建消息对象，指定消息主题Topic,Tag，和消息体
         for (int i = 0; i < 10; i++) {
-            Message message = new Message("base", "tag1", ("Hello rocketmq" + i).getBytes());
+            Message message = new Message("base", "tag1", ("Hello rocketmq同步消息" + i).getBytes());
             //5.发送消息,同步发送消息会等待Broker返回结果
             SendResult send = producer.send(message);
             // 发送状态
