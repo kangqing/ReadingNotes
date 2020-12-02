@@ -298,22 +298,23 @@ mapedFileSizeConsumeQueue=300000
 diskMaxUsedSpaceRatio=88
 
 # 存储路径
-storePathRootDir=/opt/software/rocketmq/store
+# ****************注意这些个路径store-s不能与主broker的store相同，不然会导致slave退出*************************
+storePathRootDir=/opt/software/rocketmq/store-s
 
 # commitLog存储路径
-storePathCommitLog=/opt/software/rocketmq/store/commitLog
+storePathCommitLog=/opt/software/rocketmq/store-s/commitLog
 
 # 消费队列存储路径
-storePathConsumeQueue=/opt/software/rocketmq/store/consumequeue
+storePathConsumeQueue=/opt/software/rocketmq/store-s/consumequeue
 
 # 消息索引存储路径
-storePathIndex=/opt/software/rocketmq/store/index
+storePathIndex=/opt/software/rocketmq/store-s/index
 
 # checkpoint文件存储路径
-storeCheckpoint=/opt/software/rocketmq/store/checkpoint
+storeCheckpoint=/opt/software/rocketmq/store-s/checkpoint
 
 # abort文件存储路径
-abortFile=/opt/software/rocketmq/store/abort
+abortFile=/opt/software/rocketmq/store-s/abort
 
 # 限制消息的大小
 maxMessageSize=65536
@@ -482,22 +483,23 @@ mapedFileSizeConsumeQueue=300000
 diskMaxUsedSpaceRatio=88
 
 # 存储路径
-storePathRootDir=/opt/software/rocketmq/store
+# ****************注意这些个路径store-s不能与主broker的store相同，不然会导致slave退出*************************
+storePathRootDir=/opt/software/rocketmq/store-s
 
 # commitLog存储路径
-storePathCommitLog=/opt/software/rocketmq/store/commitLog
+storePathCommitLog=/opt/software/rocketmq/store-s/commitLog
 
 # 消费队列存储路径
-storePathConsumeQueue=/opt/software/rocketmq/store/consumequeue
+storePathConsumeQueue=/opt/software/rocketmq/store-s/consumequeue
 
 # 消息索引存储路径
-storePathIndex=/opt/software/rocketmq/store/index
+storePathIndex=/opt/software/rocketmq/store-s/index
 
 # checkpoint文件存储路径
-storeCheckpoint=/opt/software/rocketmq/store/checkpoint
+storeCheckpoint=/opt/software/rocketmq/store-s/checkpoint
 
 # abort文件存储路径
-abortFile=/opt/software/rocketmq/store/abort
+abortFile=/opt/software/rocketmq/store-s/abort
 
 # 限制消息的大小
 maxMessageSize=65536
