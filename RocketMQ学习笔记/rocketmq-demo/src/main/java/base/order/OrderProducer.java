@@ -49,7 +49,7 @@ public class OrderProducer {
                 }
             }, orderSteps.get(i).getOrderId());
 
-            System.out.println("发送结果：" + send);
+            System.out.println("发送结果：" + send.getMessageQueue().getQueueId());
 
         }
         producer.shutdown();

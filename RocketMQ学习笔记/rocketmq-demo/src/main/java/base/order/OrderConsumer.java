@@ -22,13 +22,13 @@ public class OrderConsumer {
         consumer.setNamesrvAddr("192.168.16.128:9876;192.168.16.129:9876");
         //3.订阅主题Topic和Tag,这里可以订阅tag1同步消息、tage2异步消息， tag3单向消息， 都消费则可以用 || 连接。
         //例如： tage1 || tag2 || tag3
-        consumer.subscribe("orderTopic", "*");
+        consumer.subscribe("orderTopic", "orderTag");
         //4.注册消息监听器(MessageListenerOrderly顺序相关监听器)
         consumer.registerMessageListener(new MessageListenerOrderly() {
             @Override
             public ConsumeOrderlyStatus consumeMessage(List<MessageExt> list, ConsumeOrderlyContext consumeOrderlyContext) {
                 for (MessageExt messageExt : list) {
-                    System.out.println("线程：【" + Thread.currentThread().getName() + "】消费消息：" + new String(messageExt.getBody()));
+                    System.out.println("线程：【" + Thread.currentThread().getName() + "】消费消息：" + new String(messageExt.getBody()) + "队列id=" + messageExt.getQueueId());
                 }
                 return ConsumeOrderlyStatus.SUCCESS;
             }
