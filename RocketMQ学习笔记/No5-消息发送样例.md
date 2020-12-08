@@ -65,11 +65,27 @@
 
     批量发送消息能显著提高传递小消息的性能。限制是这些批量消息应该有相同的topic,相同的waitStoreMsgOK,而且不能是延时消息。此外，这一批量
     消息的总大小不能超过 4MB
-    如果消息总长度大于 4MB时候需要把消息进行分割。见rocket-demo
+    如果消息总长度大于 4MB时候需要把消息进行分割。见rocketmq-demo
     
-   
+7. 过滤消息
 
+    （1）Tag过滤
+        
+        其中星号代表消费所有 tag
+        consumer.subscribe("BatchTopic", "tag1 || tag2");
+        consumer.subscribe("BatchTopic", "*");
     
+    （2）SQL过滤
+    
+        见rocketmq-demo的filter包
+        // 给消息添加额外属性
+        message.putUserProperty("a", String.valueOf(i));
+        // sql 过滤消息，只消费自定义属性 a > 5 的消息
+        consumer.subscribe("FilterTopic", MessageSelector.bySql("a > 5"));
+        
+        
+        
+        
     
 
     
