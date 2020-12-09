@@ -83,7 +83,11 @@
         // sql 过滤消息，只消费自定义属性 a > 5 的消息
         consumer.subscribe("FilterTopic", MessageSelector.bySql("a > 5"));
         
-        
+8. 事务消息：
+
+    见rocketmq-demo的transaction包，
+    事务消息的状态：提交、回滚、中间状态
+    处于提交状态的可以被消费，处于回滚状态的消息会在队列中删除，中间状态的消息会进行回查，回查中提交或回滚该消息。      
         
         
     
