@@ -91,3 +91,17 @@ server.3=192.168.16.128:2883:3883
 ```
 
 ### 启动集群
+
+启动每一个zookeeper,进入bin目录执行如下命令
+```shell script
+# 启动zookeeper
+./zkServer.sh start
+# 如果，没有权限则
+chmod 777 ./*.sh
+
+# 查看节点的主从状态
+./zkServer.sh status
+
+# Mode: leader代表是主节点
+# Mode: follower代表是从节点
+```
