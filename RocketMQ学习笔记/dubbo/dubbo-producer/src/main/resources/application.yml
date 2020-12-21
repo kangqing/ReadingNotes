@@ -1,0 +1,11 @@
+dubbo:
+  application:
+    name: dubbo-provider # 注册服务名
+  registry:
+    address: zookeeper://127.0.0.1:2181
+    #address: nacos://127.0.0.1:8848 # 注册中心地址
+  protocol:
+    name: dubbo # 协议
+    port: 20880 # 协议端口
+  monitor:
+    protocol: registry # 监控中心地址，去注册中心自动发现
